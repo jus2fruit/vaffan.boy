@@ -171,7 +171,7 @@ bot.on ('message' , message => {
         message.reply("help envoyés")
         var helpmp_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire")
+           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insulte ésseye et tu verra")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
