@@ -22,11 +22,11 @@ var prefix = ("/");
 var randnum = 0;
 
 bot.on('ready', () => {
-    bot.user.setPresence({ game: { name: '[/help] vaffan bot', type: 0}})
+    bot.user.setPresence({ game: { name: '[/help] | vaffan bot|', type: 0}})
     console.log ("bot ready !")
 });
 
-bot.login(process.env.TOKEN);
+bot.login('NDAyNTMzMDYyMDE5MjUyMjI0.DT6H-A.q1D7Rr7F33mai60Oom3Z-4GZgW4');
 
 bot.on ('message' , message => {
     if (message.content === "ping"){
@@ -39,7 +39,7 @@ bot.on ('message' , message => {
         console.log('bonne nuit')
     }
     if (message.content === "test"){
-        message.reply("tu test quoi la ?")
+        message.reply("tu test quoi la !!!")
         console.log('test')
     }
     if (message.content === "bonjour"){
@@ -140,14 +140,16 @@ bot.on ('message' , message => {
         var usercreatedate = message.author.createdAt.toString().split(' ')
 
          var stats_embed = new discord.RichEmbed()
+         .setColor('#01FF3E')
          .setTitle(`stats utilisateur : ${message.author.username}`)
          .addField("point",`${userpoint[1]} point`, true)
          .addField("user ID", msgauthor, true)
          .addField("inventaire", Inventory[1])
          .addField("date de création de l'utilisateur", usercreatedate[1] + ' ' + usercreatedate[2]+','+usercreatedate[3])
          .setThumbnail(message.author.avatarURL)
+         .addField(message.author.presence)
 
-         message.author.send({embed: stats_embed})
+         message.channel.send({embed: stats_embed})
 
         break;
 
@@ -159,7 +161,6 @@ bot.on ('message' , message => {
            .setColor('#0132BC')
            .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
-           .addField("questions pour le bot:", "comment va tu vaffan bot?")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
            message.channel.sendEmbed(help_embed);
@@ -172,21 +173,11 @@ bot.on ('message' , message => {
            .setColor('#0132BC')
            .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
-           .addField("questions pour le bot:", "comment va tu vaffan bot?")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
            message.author.sendEmbed(helpmp_embed);
         console.log("commande helpmp demander !");
     }
-
-
-    if (message.content === "comment va tu vaffan bot?"){
-        message.reply("oui je vais bien")
-    }
-
-
-
-
 
     if (message.content === prefix + "point"){
        var point = db.get("point").filter({user: msgauthor}).find('point').value()
@@ -194,9 +185,14 @@ bot.on ('message' , message => {
        var point_embed = new discord.RichEmbed()
          .setColor('#01FF3E')
          .setTitle(`point de ${message.author}`)
-         .setDescription("voici tes point")
+         .setDescription("voici tes points")
          .addField("point:", `${pointfinal[1]} point` )
     message.channel.send({embed: point_embed});
+    }
+
+    if (message.content === prefix + "insult"){
+        message.author.send("tu veut m'insulter c'est sa !!!!")
+        console.log('insult')
     }
 
 });
