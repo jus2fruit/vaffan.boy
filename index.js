@@ -22,11 +22,11 @@ var prefix = ("/");
 var randnum = 0;
 
 bot.on('ready', () => {
-    bot.user.setPresence({ game: { name: '[/help] | vaffan bot|', type: 0}})
+    bot.user.setPresence({ game: { name: '╠ [/help] | vaffan bot ╣', type: 0}})
     console.log ("bot ready !")
 });
 
-bot.login('NDAyNTMzMDYyMDE5MjUyMjI0.DT6H-A.q1D7Rr7F33mai60Oom3Z-4GZgW4');
+bot.login(process.env.TOKEN);
 
 bot.on ('message' , message => {
     if (message.content === "ping"){
