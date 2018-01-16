@@ -56,6 +56,11 @@ bot.on ('message' , message => {
         console.log('bonjour')
     }
 
+    if (message.content === "bonsoir"){
+        message.reply("bonsoir!")
+        console.log('bonsoir')
+    }
+
     if (message.content === "Bonsoir"){
         message.reply("bonsoir!")
         console.log('bonsoir')
