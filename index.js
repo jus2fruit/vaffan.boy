@@ -37,7 +37,7 @@ bot.on ('message' , message => {
     if (message.content === "bonne nuit"){
         message.reply("bonne nuit à toi")
         console.log('bonne nuit')
-
+    }
     if (message.content === "Bonne nuit"){
          message.reply("bonne nuit à toi")
          console.log('bonne nuit')
