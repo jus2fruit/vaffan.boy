@@ -37,6 +37,10 @@ bot.on ('message' , message => {
     if (message.content === "bonne nuit"){
         message.reply("bonne nuit à toi")
         console.log('bonne nuit')
+
+    if (message.content === "Bonne nuit"){
+         message.reply("bonne nuit à toi")
+         console.log('bonne nuit')
     }
     if (message.content === "test"){
         message.reply("tu test quoi la !!!")
@@ -45,6 +49,16 @@ bot.on ('message' , message => {
     if (message.content === "bonjour"){
         message.reply("bonjour!")
         console.log('bonjour')
+    }
+
+    if (message.content === "Bonjour"){
+        message.reply("bonjour!")
+        console.log('bonjour')
+    }
+
+    if (message.content === "Bonsoir"){
+        message.reply("bonsoir!")
+        console.log('bonsoir')
     }
 
     var msgauthor = message.author.id;
@@ -147,7 +161,6 @@ bot.on ('message' , message => {
          .addField("inventaire", Inventory[1])
          .addField("date de création de l'utilisateur", usercreatedate[1] + ' ' + usercreatedate[2]+','+usercreatedate[3])
          .setThumbnail(message.author.avatarURL)
-         .addField(message.author.presence)
 
          message.channel.send({embed: stats_embed})
 
@@ -159,8 +172,8 @@ bot.on ('message' , message => {
     if (message.content === prefix + "help"){
         var help_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult : ésseye et tu verra")
-           .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
+           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insulte ésseye et tu verra")
+           .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour etc... ")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
            message.channel.sendEmbed(help_embed);
@@ -171,7 +184,7 @@ bot.on ('message' , message => {
         message.reply("help envoyés")
         var helpmp_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult : ésseye et tu verra")
+           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insulte ésseye et tu verra")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
