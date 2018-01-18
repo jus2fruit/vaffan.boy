@@ -71,7 +71,7 @@ bot.on ('message' , message => {
     if (message.author.bot)return;
 
     if (!db.get("Inventory").find({user: msgauthor}).value()){
-         db.get("Inventory").push({user: msgauthor, items: "vide"}).write();
+         db.get("Inventory").push({user: msgauthor, items: "Vide"}).write();
      }
 
     if (!db.get("point").find({user: msgauthor}).value()){
@@ -96,7 +96,7 @@ bot.on ('message' , message => {
         var store_embed = new discord.RichEmbed()
             .setColor('#E20000')
             .setTitle("vaffan store")
-            .setDescription("voici le store mais il est pas fini alors gaspille pas tou t point ")
+            .setDescription("voici le store !")
             .addField("couleur:", "rouge [100point][ID: item0001] description: pseudo rouge")
             .addField("couleur:", "bleu [150point][ID: item0002] description: pseudo bleu")
             .addField("couleur:", "aux choix [500point][ID: item0003] description: couleur pseudo aux choix")
@@ -132,11 +132,11 @@ bot.on ('message' , message => {
 
                 if (userpoint[1] >= iteminfo[3]){
                     message.reply(`***information:*** votre achat (${iteminfo[1]}) a été accépté. retrait de ${iteminfo[3]} point`)
-                    if (!db.get("Inventory").filter({user: msgauthor}).find({user: "Vide"}).value()){
+                if (!db.get("Inventory").filter({user: msgauthor}).find({user: "Vide"}).value()){
                     console.log("inventaire pas vide");
                     db.get("point").filter({user: msgauthor}).find("point").assign({user: msgauthor, point: userpoint[1] -= iteminfo[3]}).write();
                     db.get("Inventory").filter({user: msgauthor}).find("items").assign({user: msgauthor, items: itemsdb[1] + " , " + iteminfo[1]}).write();
-                    }else{
+                }else{
                     console.log("inventaire vide !");
                     db.get("point").filter({user: msgauthor}).find("point").assign({user: msgauthor, point: userpoint[1] -= iteminfo[3]}).write();
                     db.get("Inventory").filter({user: msgauthor}).find("items").assign({user: msgauthor, items: iteminfo[1]}).write();
@@ -148,7 +148,7 @@ bot.on ('message' , message => {
             }
         }
 
-        break;
+     break;
 
         case "stats":
 
@@ -177,7 +177,7 @@ bot.on ('message' , message => {
     if (message.content === prefix + "help"){
         var help_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insulte ésseye et tu verra")
+           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult ésseye et tu verra")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour etc... ")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
@@ -189,7 +189,7 @@ bot.on ('message' , message => {
         message.reply("help envoyés")
         var helpmp_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insulte ésseye et tu verra")
+           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult ésseye et tu verra")
            .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
