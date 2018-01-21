@@ -66,6 +66,7 @@ bot.on ('message' , message => {
         console.log('bonsoir')
     }
 
+
     var msgauthor = message.author.id;
 
     if (message.author.bot)return;
@@ -182,6 +183,11 @@ bot.on ('message' , message => {
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
            message.channel.sendEmbed(help_embed);
+           var help_embed2 = new discord.RichEmbed()
+           .setColor('#0132BC')
+           .addField("UnbelievaBoat", "$bank: Vérifiez le solde total de la banque pour le serveur et le taux d'intérêt actuel.\n$deposit <amount ou all>: Déposez de l'argent à votre banque.\n$withdraw <amount ou all>: Retirez de l'argent de votre banque.\n$give-money <member> <amount>: Donnez à un autre membre votre argent\n$money [member]: Vérifiez votre solde, ou le solde d'un autre membre.\n$leaderboard [page]: Affiche le classement de l'argent pour le serveur.\n$work: Travailler. Cette commande n'a aucune chance d'obtenir une amende.Et permet de travailler.\n$slut: vous faitent juste la s*lope pour de l'argent.\n$crime: Commettre un crime, cela a plus de risque, mais un paiement plus élevé.\n$rob <member>: vole l'argent d'un autre membre!")
+           .addField("UnbelievaBoat suite", "$store: pour voir le store\n$buy-item [quantity] <item name> : Achetez un article du magasin. Si aucune quantité n'est donnée, vous allez acheter 1.\n$sell-item <member> [quantity] <name>: Vendre un article dans votre inventaire à un autre membre pour de l'argent.\n$use-item [amount] <item name>: Utilisez un article dans votre inventaire. Si l'élément est associé à un rôle, ce rôle vous sera attribué.\n$inventory [member] [page] Voir votre l'inventaire ou celui de quelqu'un d'autre\n$item-info <item name>: Afficher les détails d'un article")
+           message.channel.sendEmbed(help_embed2);
         console.log("commande help demander !");
     }
 
@@ -194,6 +200,11 @@ bot.on ('message' , message => {
            .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
            .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
            message.author.sendEmbed(helpmp_embed);
+           var help_embed2 = new discord.RichEmbed()
+           .setColor('#0132BC')
+           .addField("UnbelievaBoat", "$bank: Vérifiez le solde total de la banque pour le serveur et le taux d'intérêt actuel.\n$deposit <amount ou all>: Déposez de l'argent à votre banque.\n$withdraw <amount ou all>: Retirez de l'argent de votre banque.\n$give-money <member> <amount>: Donnez à un autre membre votre argent\n$money [member]: Vérifiez votre solde, ou le solde d'un autre membre.\n$leaderboard [page]: Affiche le classement de l'argent pour le serveur.\n$work: Travailler. Cette commande n'a aucune chance d'obtenir une amende.Et permet de travailler.\n$slut: vous faitent juste la s*lope pour de l'argent.\n$crime: Commettre un crime, cela a plus de risque, mais un paiement plus élevé.\n$rob <member>: vole l'argent d'un autre membre!")
+           .addField("UnbelievaBoat suite", "$store: pour voir le store\n$buy-item [quantity] <item name> : Achetez un article du magasin. Si aucune quantité n'est donnée, vous allez acheter 1.\n$sell-item <member> [quantity] <name>: Vendre un article dans votre inventaire à un autre membre pour de l'argent.\n$use-item [amount] <item name>: Utilisez un article dans votre inventaire. Si l'élément est associé à un rôle, ce rôle vous sera attribué.\n$inventory [member] [page] Voir votre l'inventaire ou celui de quelqu'un d'autre\n$item-info <item name>: Afficher les détails d'un article")
+           message.author.sendEmbed(help_embed2);
         console.log("commande helpmp demander !");
     }
 
