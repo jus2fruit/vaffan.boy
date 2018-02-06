@@ -18,7 +18,7 @@ app.listen(app.get('port'), function(){
     console.log(`bot en fonctionnement sur le port ${app.get('port')}`)
 })
 
-var bot = new discord.Client(process.env.TOKEN);
+var bot = new discord.Client();
 var prefix = ("/");
 var randnum = 0;
 
@@ -27,7 +27,7 @@ bot.on('ready', () => {
     console.log ("bot ready !")
 });
 
-bot.login("");
+bot.login(process.env.TOKEN);
 
 
  bot.on('guildMemberAdd', member => {
