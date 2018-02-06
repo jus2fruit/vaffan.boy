@@ -9,6 +9,7 @@ db.defaults({ point: [], Inventory: []}).write()
 const storedb = low(storeadatper)
 const express = require('express');
 const app = express();
+const client = new discord.Client();
 
 //DEBUT PARAGRAPHE HEROKU
 app.set('port', (process.env.PORT || 5000))
@@ -17,7 +18,7 @@ app.listen(app.get('port'), function(){
     console.log(`bot en fonctionnement sur le port ${app.get('port')}`)
 })
 
-var bot = new discord.Client();
+var bot = new discord.Client(process.env.TOKEN);
 var prefix = ("/");
 var randnum = 0;
 
@@ -26,9 +27,27 @@ bot.on('ready', () => {
     console.log ("bot ready !")
 });
 
-bot.login(process.env.TOKEN);
+bot.login("");
 
-bot.on ('message' , message => {
+
+ bot.on('guildMemberAdd', member => {
+    const channel = member.guild.channels.find('name', 'arivee-depart');
+    if (!channel) return;
+    channel.send(`bienvenue a toi,` + member.displayName);
+
+  });
+
+
+  bot.on('guildMemberRemove', member => {
+    const channel = member.guild.channels.find('name', 'arivee-depart');
+    if (!channel) return;
+    channel.send(member.displayName + ` à quitée **la vaffan squad**`);
+
+  });
+  
+bot.on ('message' , message => {  
+
+
     if (message.content === "ping"){
         message.reply(":ping_pong:  pong !");
         console.log('ping pong !');
@@ -66,6 +85,11 @@ bot.on ('message' , message => {
         console.log('bonsoir')
     }
 
+    if (message.content === "ça va vaffan bot"){
+        message.reply("oui, merci de te soucier de moi")
+        console.log('sa va')
+    }
+
 
     var msgauthor = message.author.id;
 
@@ -101,6 +125,7 @@ bot.on ('message' , message => {
             .addField("couleur:", "rouge [100point][ID: item0001] description: pseudo rouge")
             .addField("couleur:", "bleu [150point][ID: item0002] description: pseudo bleu")
             .addField("couleur:", "aux choix [500point][ID: item0003] description: couleur pseudo aux choix")
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
 
         message.channel.send({embed: store_embed});
         console.log("store");
@@ -161,51 +186,143 @@ bot.on ('message' , message => {
 
          var stats_embed = new discord.RichEmbed()
          .setColor('#01FF3E')
-         .setTitle(`stats utilisateur : ${message.author.username}`)
+         .setTitle(`stats utilisateur :`)
+         .addField("nom de l'utilisateur", message.author.username)
          .addField("point",`${userpoint[1]} point`, true)
          .addField("user ID", msgauthor, true)
          .addField("inventaire", Inventory[1])
-         .addField("date de création de l'utilisateur", usercreatedate[1] + ' ' + usercreatedate[2]+','+usercreatedate[3])
          .setThumbnail(message.author.avatarURL)
+         .addField("date de création de l'utilisateur", usercreatedate[1] + ' ' + usercreatedate[2]+','+usercreatedate[3])
+         .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
 
          message.channel.send({embed: stats_embed})
 
         break;
 
-     }
+        case "statsde":
 
+        var msgmention = message.mentions.members.first().id;
+        var msgnom = message.mentions.members.first();
+        var userpointdb = db.get("point").filter({user: msgmention}).find("point").value();
+        var userpoint = Object.values(userpointdb);
+        var Inventorydb = db.get("Inventory").filter({user: msgmention}).find("items").value();
+        var Inventory = Object.values(Inventorydb);
+        var usercreatedate = message.mentions.members.first().user.createdAt.toString().split(' ')
+        
+
+         var statsde_embed = new discord.RichEmbed()
+         .setColor('#01FF3E')
+         .setTitle(`stats utilisateur :`)
+         .addField("nom de l'utilisateur", msgnom)
+         .addField("point",`${userpoint[1]} point`, true)
+         .addField("user ID", msgmention, true)
+         .addField("inventaire", Inventory[1])
+         .setThumbnail(message.mentions.members.first().user.avatarURL)
+         .addField("date de création de l'utilisateur", usercreatedate[1] + ' ' + usercreatedate[2]+','+usercreatedate[3])
+         .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+         
+
+         message.channel.send({embed: statsde_embed})
+
+        break;
+
+        case "inv":
+
+         var Inventorydb = db.get("Inventory").filter({user: msgauthor}).find("items").value();
+         var Inventory = Object.values(Inventorydb);
+
+         var inv_embed = new discord.RichEmbed()
+         .setColor('#04GF5E')
+         .addField("inventaire", Inventory[1])
+         .addField("nom de l'utilisateur", message.author.username)
+         .addField("user ID", msgauthor, true)
+         .setThumbnail(message.author.avatarURL)
+         .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+
+         message.channel.send({embed: inv_embed})
+
+        break;
+
+        case "invde":
+
+        var msgmention = message.mentions.members.first().id;
+        var msgnom = message.mentions.members.first();
+        var Inventorydb = db.get("Inventory").filter({user: msgmention}).find("items").value();
+        var Inventory = Object.values(Inventorydb);
+
+        var invde_embed = new discord.RichEmbed()
+        .setColor('#04GF5E')
+        .addField("inventaire", Inventory[1])
+        .addField("nom de l'utilisateur", msgnom)
+        .addField("user ID", msgmention, true)
+        .setThumbnail(message.mentions.members.first().user.avatarURL)
+        .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+
+        message.channel.send({embed: invde_embed})
+
+       break;
+
+       case "logode":
+
+       var msgnom = message.mentions.members.first();
+
+        var logode_embed = new discord.RichEmbed()
+        .setColor('#25c059')
+        .addField(`**Voici le logo de**`, msgnom)
+        .setImage(message.mentions.members.first().user.avatarURL)
+        .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+        message.channel.send(logode_embed)
+
+       break;
+
+     }
 
     if (message.content === prefix + "help"){
         var help_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult ésseye et tu verra")
-           .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour etc... ")
-           .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
-           .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
-           message.channel.sendEmbed(help_embed);
-           var help_embed2 = new discord.RichEmbed()
-           .setColor('#0132BC')
-           .addField("UnbelievaBoat", "$bank: Vérifiez le solde total de la banque pour le serveur et le taux d'intérêt actuel.\n$deposit <amount ou all>: Déposez de l'argent à votre banque.\n$withdraw <amount ou all>: Retirez de l'argent de votre banque.\n$give-money <member> <amount>: Donnez à un autre membre votre argent\n$money [member]: Vérifiez votre solde, ou le solde d'un autre membre.\n$leaderboard [page]: Affiche le classement de l'argent pour le serveur.\n$work: Travailler. Cette commande n'a aucune chance d'obtenir une amende.Et permet de travailler.\n$slut: vous faitent juste la s*lope pour de l'argent.\n$crime: Commettre un crime, cela a plus de risque, mais un paiement plus élevé.\n$rob <member>: vole l'argent d'un autre membre!")
-           .addField("UnbelievaBoat suite", "$store: pour voir le store\n$buy-item [quantity] <item name> : Achetez un article du magasin. Si aucune quantité n'est donnée, vous allez acheter 1.\n$sell-item <member> [quantity] <name>: Vendre un article dans votre inventaire à un autre membre pour de l'argent.\n$use-item [amount] <item name>: Utilisez un article dans votre inventaire. Si l'élément est associé à un rôle, ce rôle vous sera attribué.\n$inventory [member] [page] Voir votre l'inventaire ou celui de quelqu'un d'autre\n$item-info <item name>: Afficher les détails d'un article")
-           message.channel.sendEmbed(help_embed2);
-        console.log("commande help demander !");
+           .addField("commande du bot !", "https://vaffansquad.wixsite.com/vaffan-squad/vaffan-bot")
+           .addField("commande moderateur:", "https://vaffansquad.wixsite.com/vaffan-squad/commande-moderateur" )
+           .addField("enderbot commande:", "https://vaffansquad.wixsite.com/vaffan-squad/enderbot")
+           .addField("dyno commande:", "https://vaffansquad.wixsite.com/vaffan-squad/dyno")
+           .addField("Mee6 commande:", "https://vaffansquad.wixsite.com/vaffan-squad/Mee6")
+           .addField("koya commande:", "https://vaffansquad.wixsite.com/vaffan-squad/koya")
+           .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+           message.channel.send(help_embed);
+
+    }
+
+    if (message.content === prefix + "logobot"){
+        var logobot_embed = new discord.RichEmbed()
+        .setColor('#25c059')
+        .setTitle("**Voici le logo du bot**")
+        .setImage(bot.user.avatarURL)
+        .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+        message.channel.send(logobot_embed)
+
+    }
+
+    if (message.content === prefix + "logo"){
+        var logobot_embed = new discord.RichEmbed()
+        .setColor('#25c059')
+        .setTitle(`**Voici ton logo**`)
+        .setImage(message.author.avatarURL)
+        .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+        message.channel.send(logobot_embed)
+
     }
 
     if (message.content === prefix + "helpmp"){
         message.reply("help envoyés")
         var helpmp_embed = new discord.RichEmbed()
            .setColor('#0132BC')
-           .addField("commande du bot !", "   /help : affiche les commande du bot ! \n/point : vous dit votre nombre de point\n/helpmp : vous donne le help en mp\n/store : pour voir notre boutique\n/buyitem (item001)\n/stats : pour voir vos stats et votre inventaire\n/insult ésseye et tu verra")
-           .addField("interaction",  "ping : vous dit vos ping \nbonne nuit : vous dit bonne nuit \nbonjour : vous dit bonjour ")
-           .addField("commande moderateur:", "^^warn : @lepseudo laraison \n^^warns @lepseudo : vous dit les warn de la perssone \n^^mute le temps @lepseudo \n!clear le nombre de message \ntout sa est à faire dans le channel #sanction " )
-           .addField("enderbot commande:", ">i : ouvre l'inventaire ou crée votre conte\n>mine : mine pour 1 de mana\n>mineall : mine pour toute la mana\> ")
-           message.author.sendEmbed(helpmp_embed);
-           var help_embed2 = new discord.RichEmbed()
-           .setColor('#0132BC')
-           .addField("UnbelievaBoat", "$bank: Vérifiez le solde total de la banque pour le serveur et le taux d'intérêt actuel.\n$deposit <amount ou all>: Déposez de l'argent à votre banque.\n$withdraw <amount ou all>: Retirez de l'argent de votre banque.\n$give-money <member> <amount>: Donnez à un autre membre votre argent\n$money [member]: Vérifiez votre solde, ou le solde d'un autre membre.\n$leaderboard [page]: Affiche le classement de l'argent pour le serveur.\n$work: Travailler. Cette commande n'a aucune chance d'obtenir une amende.Et permet de travailler.\n$slut: vous faitent juste la s*lope pour de l'argent.\n$crime: Commettre un crime, cela a plus de risque, mais un paiement plus élevé.\n$rob <member>: vole l'argent d'un autre membre!")
-           .addField("UnbelievaBoat suite", "$store: pour voir le store\n$buy-item [quantity] <item name> : Achetez un article du magasin. Si aucune quantité n'est donnée, vous allez acheter 1.\n$sell-item <member> [quantity] <name>: Vendre un article dans votre inventaire à un autre membre pour de l'argent.\n$use-item [amount] <item name>: Utilisez un article dans votre inventaire. Si l'élément est associé à un rôle, ce rôle vous sera attribué.\n$inventory [member] [page] Voir votre l'inventaire ou celui de quelqu'un d'autre\n$item-info <item name>: Afficher les détails d'un article")
-           message.author.sendEmbed(help_embed2);
-        console.log("commande helpmp demander !");
+           .addField("commande du bot !", "https://vaffansquad.wixsite.com/vaffan-squad/vaffan-bot")
+           .addField("commande moderateur:", "https://vaffansquad.wixsite.com/vaffan-squad/commande-moderateur" )
+           .addField("enderbot commande:", "https://vaffansquad.wixsite.com/vaffan-squad/enderbot")
+           .addField("dyno commande:", "https://vaffansquad.wixsite.com/vaffan-squad/dyno")
+           .addField("Mee6 commande:", "https://vaffansquad.wixsite.com/vaffan-squad/Mee6")
+           .addField("koya commande:", "https://vaffansquad.wixsite.com/vaffan-squad/koya")
+           .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+           message.author.send(helpmp_embed);
     }
 
     if (message.content === prefix + "point"){
@@ -213,9 +330,10 @@ bot.on ('message' , message => {
        var pointfinal = Object.values(point);
        var point_embed = new discord.RichEmbed()
          .setColor('#01FF3E')
-         .setTitle(`point de ${message.author}`)
+         .setTitle(`point de ${message.member.user.username}`)
          .setDescription("voici tes points")
          .addField("point:", `${pointfinal[1]} point` )
+         .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
     message.channel.send({embed: point_embed});
     }
 
@@ -224,4 +342,235 @@ bot.on ('message' , message => {
         console.log('insult')
     }
 
-});
+    if (message.content === prefix + "site"){
+        message.author.send("https://vaffansquad.wixsite.com/vaffan-squad")
+        console.log('site')
+    }
+
+    const command = args.shift().toLowerCase();
+
+    if ( command === "slap" ){
+        console.log("Commande slap")
+        random2(1, 10)
+        let slap = message.mentions.members.first().user.username
+
+        if (randnum2 == 1){
+            var slap_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/v0tBeMcKMdpUQ/giphy.gif`) 
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap_embed) 
+        }
+    
+        if (randnum2 == 2){
+            var slap2_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/26tk1gJXh1HlWn064/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap2_embed)
+    
+        }
+
+        if (randnum2 == 3){
+            var slap3_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`http://www.giflords.com/wp-content/uploads/2017/05/g3hh.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap3_embed)
+    
+        }
+
+        if (randnum2 == 4){
+            var slap4_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media1.tenor.com/images/8a47ca4d5e354e3e5cc9f61139971b98/tenor.gif?itemid=4703409`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap4_embed)
+    
+        }
+
+        if (randnum2 == 5){
+            var slap5_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://vignette.wikia.nocookie.net/onepunchman/images/7/7a/Encha%C3%AEnement_de_Coups_de_Poings_Normaux.gif/revision/latest?cb=20160301165218&path-prefix=fr`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap5_embed)
+    
+        }
+
+        if (randnum2 == 6){
+            var slap6_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/arbHBoiUWUgmc/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap6_embed)
+    
+        }
+
+        if (randnum2 == 7){
+            var slap7_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/XfuZlqRsgSRJS/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap7_embed)
+    
+        }
+
+        if (randnum2 == 8){
+            var slap8_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/11txOp944ZY04o/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap8_embed)
+    
+        }
+
+        if (randnum2 == 9){
+            var slap9_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/nQaMApy6YJTTW/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap9_embed)
+    
+        }
+
+        if (randnum2 == 10){
+            var slap10_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous avez claqué **" + slap +".", "Aie j'aurai pas aimer !")
+            .setImage(`https://media.giphy.com/media/rP25O9Dy6W9dC/giphy.gif`)
+            .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
+            message.channel.send(slap10_embed)
+    
+        }
+
+
+    }
+
+    if ( command === "hug" ){
+        console.log("Commande hug")
+        random2(1, 10);
+        let hug = message.mentions.members.first().user.username
+
+        if (randnum2 == 1){
+            var hug_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/IuCSOHcDlooPm/giphy.gif`) 
+            message.channel.send(hug_embed) 
+        }
+    
+        if (randnum2 == 2){
+            var hug2_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/yidUzriaAGJbsxt58k/giphy.gif`)
+            message.channel.send(hug2_embed)
+    
+        }
+
+        if (randnum2 == 3){
+            var hug3_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`http://media.giphy.com/media/42YlR8u9gV5Cw/giphy.gif`)
+            message.channel.send(hug3_embed)
+    
+        }
+
+        if (randnum2 == 4){
+            var hug4_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/lXiRKBj0SAA0EWvbG/giphy.gif`)
+            message.channel.send(hug4_embed)
+    
+        }
+
+        if (randnum2 == 5){
+            var hug5_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/fyx8vjZc2ZvoY/giphy.gif`)
+            message.channel.send(hug5_embed)
+    
+        }
+
+        if (randnum2 == 6){
+            var hug6_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/Qwi6fEcn2JJeg/giphy.gif`)
+            message.channel.send(hug6_embed)
+    
+        }
+
+        if (randnum2 == 7){
+            var hug7_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/X4pI9XchDNsu4/giphy.gif`)
+            message.channel.send(hug7_embed)
+    
+        }
+
+        if (randnum2 == 8){
+            var hug8_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/BnhIfw9hBDlLi/giphy.gif`)
+            message.channel.send(hug8_embed)
+    
+        }
+
+        if (randnum2 == 9){
+            var hug9_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/wsSssszJkPBYs/giphy.gif`)
+            message.channel.send(hug9_embed)
+    
+        }
+
+        if (randnum2 == 10){
+            var hug10_embed = new discord.RichEmbed()
+            .setColor('#F60000')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(`https://media.giphy.com/media/mmPgxbuPiwCQg/giphy.gif`)
+            message.channel.send(hug10_embed)
+    
+        }
+
+        if (randnum2 == 11){
+            var hug6_embed = new discord.RichEmbed()
+            .setColor('#25c059')
+            .addField("**Vous fait un calin à **" + hug +".", "j'éspére qu'il(elle) à aimer !")
+            .setImage(``)
+            message.channel.send(hug6_embed)
+    
+        }
+        
+    }
+
+})
+
+
+function random(min, max) {
+    min = Math.ceil(0);
+    max = Math.floor(3);
+    randnum = Math.floor(Math.random() * (max - min +1) + min);
+}
+function random2(min, max){
+    min2 = Math.ceil(min)
+    max2 = Math.floor(max)
+    randnum2 = Math.floor(Math.random() * (max2 - min2 +1) + min2)
+}
