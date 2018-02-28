@@ -623,7 +623,7 @@ function random2(min, max){
     randnum2 = Math.floor(Math.random() * (max2 - min2 +1) + min2)
 }
 
-let XP = JSON.parse(fs.readFileSync('./XP.json', 'utf8'));
+let XP = JSON.parse(fs.readFileSync('./xp.json', 'utf8'));
 
 bot.on("message", message => {
 if(message.content.startsWith("prefix")) return;
@@ -647,7 +647,7 @@ var level_embed = new discord.RichEmbed()
 
 message.channel.send({embed: level_embed});
 }
-fs.writeFile('./XP.json', JSON.stringify(XP), (err) => {if(err) console.error(err)});
+fs.writeFile('./xp.json', JSON.stringify(XP), (err) => {if(err) console.error(err)});
 });
 
 
