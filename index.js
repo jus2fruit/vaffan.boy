@@ -1,15 +1,19 @@
 const discord = require('discord.js');
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
+const fs = require("fs")
+
 
 const adapter = new FileSync('db.json')
 const storeadatper = new FileSync('store.json');
 const db = low(adapter)
-db.defaults({ point: [], Inventory: []}).write()
+db.defaults({ money: [], Inventory: []}).write()
 const storedb = low(storeadatper)
 const express = require('express');
 const app = express();
 const client = new discord.Client();
+
+
 
 //DEBUT PARAGRAPHE HEROKU
 app.set('port', (process.env.PORT || 5000))
@@ -30,26 +34,62 @@ bot.on('ready', () => {
 bot.login(process.env.TOKEN);
 
 
- bot.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.find('name', 'arivee-depart');
-    if (!channel) return;
-    channel.send(`bienvenue a toi,` + member.displayName);
-
-  });
 
 
-  bot.on('guildMemberRemove', member => {
-    const channel = member.guild.channels.find('name', 'arivee-depart');
-    if (!channel) return;
-    channel.send(member.displayName + ` à quitée **la vaffan squad**`);
+  bot.on('guildMemberAdd', member => {
+    var message = message;
+    var joinslog = bot.channels.find("name", "arivee-depart");
+    var acceuil = bot.channels.find("name", "acceuil");
+    var guild = guild;
+    let role = member.guild.roles.find("name", "arrivant");
 
-  });
+    if(!joinslog) return logsbot.send(":x: **Erreur:** Aucun channel se nommant **'joins'** a été détécté.");
+
+    console.log(`${member.user.tag} a rejoit`);
+
+    member.addRole(role);
+    var bvn_embed = new discord.RichEmbed()
+    .setAuthor(`== ! 🙌 BIENVENUE 🙌 ! ==`)
+    .setColor("#ADCF4F")
+    .setDescription(`**${member.user.tag}** Amuse-toi bien parmis nous ! N'oublie pas d'aller lire les regles dans ${acceuil}\n\nSoyez polis, Souhaitez tous la bienvenue à notre nouvel arrivant ! Avec /bvn`)
+    .setThumbnail(`${member.user.displayAvatarURL}`)
+    .setTimestamp()
+    .setFooter(`${bot.user.username}`, `${bot.user.displayAvatarURL}`);
+    joinslog.send(bvn_embed);
+
+});
+
+bot.on('guildMemberRemove', member => {
+    var message = message;
+    var joinslog = bot.channels.find("name", "arivee-depart");
+
+    if(!joinslog) return logsbot.send(":x: **Erreur:** Aucun channel se nommant " + `**"${joinslog}"**` + " a été détécté.");
+
+    console.log(member.user.username + ' a quitté le serveur');
+    var depart_embed = new discord.RichEmbed()
+    .setAuthor(`== ! 😥 DÉPART 😥 ! ==`)
+    .setColor("#C03000")
+    .setDescription(`**${member.user.tag}** nous a quitté.\n\nNous te souhaitons tous bonne chance pour la suite.`)
+    .setThumbnail(`${member.user.displayAvatarURL}`)
+    .setTimestamp()
+    .setFooter(`${bot.user.username}`, `${bot.user.displayAvatarURL}`);
+    joinslog.send(depart_embed);
+
+});
+
+
+
   
-bot.on ('message' , message => {  
+bot.on ('message' , message => { 
+    
 
+
+    var args = message.content.substring(prefix.length).split(" ");
+    const command = args.shift().toLowerCase();
+   
 
     if (message.content === "ping"){
-        message.reply(":ping_pong:  pong !");
+        message.reply(`:ping_pong:  pong !`);
         console.log('ping pong !');
 
     }
@@ -90,7 +130,7 @@ bot.on ('message' , message => {
         console.log('sa va')
     }
 
-
+     
     var msgauthor = message.author.id;
 
     if (message.author.bot)return;
@@ -99,16 +139,16 @@ bot.on ('message' , message => {
          db.get("Inventory").push({user: msgauthor, items: "Vide"}).write();
      }
 
-    if (!db.get("point").find({user: msgauthor}).value()){
-        db.get("point").push({user: msgauthor, point: 1}).write();
+    if (!db.get("money").find({user: msgauthor}).value()){
+        db.get("money").push({user: msgauthor, money: 1}).write();
      }else{
-         var userpointdb = db.get("point").filter({user: msgauthor}).find("point").value();
-         console.log("userpointdb");
-         var userpoint = Object.values(userpointdb)
-         console.log(userpoint);
-         console.log(`nombre de point : ${userpoint[1]}`)
+         var usermoneydb = db.get("money").filter({user: msgauthor}).find("money").value();
+         console.log("usermoneydb");
+         var usermoney = Object.values(usermoneydb)
+         console.log(usermoney);
+         console.log(`nombre de money : ${usermoney[1]}`)
 
-         db.get("point").find({user: msgauthor}).assign({user: msgauthor, point: userpoint[1] += 1}).write();
+         db.get("money").find({user: msgauthor}).assign({user: msgauthor, money: usermoney[1] += 1}).write();
 
      }
 
@@ -122,9 +162,9 @@ bot.on ('message' , message => {
             .setColor('#E20000')
             .setTitle("vaffan store")
             .setDescription("voici le store !")
-            .addField("couleur:", "rouge [100point][ID: item0001] description: pseudo rouge")
-            .addField("couleur:", "bleu [150point][ID: item0002] description: pseudo bleu")
-            .addField("couleur:", "aux choix [500point][ID: item0003] description: couleur pseudo aux choix")
+            .addField("couleur:", "rouge [100money][ID: item0001] description: pseudo rouge")
+            .addField("couleur:", "bleu [150money][ID: item0002] description: pseudo bleu")
+            .addField("couleur:", "aux choix [500money][ID: item0003] description: couleur pseudo aux choix")
             .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
 
         message.channel.send({embed: store_embed});
@@ -153,22 +193,22 @@ bot.on ('message' , message => {
 
                 var useritem = db.get("Inventory").filter({user: msgauthor}).find("items").value();
                 var itemsdb = Object.values(useritem);
-                var userpointdb = db.get("point").filter({user: msgauthor}).find("point").value();
-                var userpoint = Object.values(userpointdb);
+                var usermoneydb = db.get("money").filter({user: msgauthor}).find("money").value();
+                var usermoney = Object.values(usermoneydb);
 
-                if (userpoint[1] >= iteminfo[3]){
-                    message.reply(`***information:*** votre achat (${iteminfo[1]}) a été accépté. retrait de ${iteminfo[3]} point`)
+                if (usermoney[1] >= iteminfo[3]){
+                    message.reply(`***information:*** votre achat (${iteminfo[1]}) a été accépté. retrait de ${iteminfo[3]} money`)
                 if (!db.get("Inventory").filter({user: msgauthor}).find({user: "Vide"}).value()){
                     console.log("inventaire pas vide");
-                    db.get("point").filter({user: msgauthor}).find("point").assign({user: msgauthor, point: userpoint[1] -= iteminfo[3]}).write();
+                    db.get("money").filter({user: msgauthor}).find("money").assign({user: msgauthor, money: usermoney[1] -= iteminfo[3]}).write();
                     db.get("Inventory").filter({user: msgauthor}).find("items").assign({user: msgauthor, items: itemsdb[1] + " , " + iteminfo[1]}).write();
                 }else{
                     console.log("inventaire vide !");
-                    db.get("point").filter({user: msgauthor}).find("point").assign({user: msgauthor, point: userpoint[1] -= iteminfo[3]}).write();
+                    db.get("money").filter({user: msgauthor}).find("money").assign({user: msgauthor, money: usermoney[1] -= iteminfo[3]}).write();
                     db.get("Inventory").filter({user: msgauthor}).find("items").assign({user: msgauthor, items: iteminfo[1]}).write();
                     }
                 }else{
-                    message.reply("erreur de transactions! nombre de point insufisant !");
+                    message.reply("erreur de transactions! nombre de money insufisant !");
 
                 }
             }
@@ -178,8 +218,8 @@ bot.on ('message' , message => {
 
         case "stats":
 
-        var userpointdb = db.get("point").filter({user: msgauthor}).find("point").value();
-        var userpoint = Object.values(userpointdb);
+        var usemoneydb = db.get("money").filter({user: msgauthor}).find("money").value();
+        var usermoney = Object.values(usermoneydb);
         var Inventorydb = db.get("Inventory").filter({user: msgauthor}).find("items").value();
         var Inventory = Object.values(Inventorydb);
         var usercreatedate = message.author.createdAt.toString().split(' ')
@@ -188,7 +228,7 @@ bot.on ('message' , message => {
          .setColor('#01FF3E')
          .setTitle(`stats utilisateur :`)
          .addField("nom de l'utilisateur", message.author.username)
-         .addField("point",`${userpoint[1]} point`, true)
+         .addField("money",`${usermoney[1]} money`, true)
          .addField("user ID", msgauthor, true)
          .addField("inventaire", Inventory[1])
          .setThumbnail(message.author.avatarURL)
@@ -203,8 +243,8 @@ bot.on ('message' , message => {
 
         var msgmention = message.mentions.members.first().id;
         var msgnom = message.mentions.members.first();
-        var userpointdb = db.get("point").filter({user: msgmention}).find("point").value();
-        var userpoint = Object.values(userpointdb);
+        var usermoneydb = db.get("money").filter({user: msgmention}).find("money").value();
+        var usermoney = Object.values(usermoneydb);
         var Inventorydb = db.get("Inventory").filter({user: msgmention}).find("items").value();
         var Inventory = Object.values(Inventorydb);
         var usercreatedate = message.mentions.members.first().user.createdAt.toString().split(' ')
@@ -214,7 +254,7 @@ bot.on ('message' , message => {
          .setColor('#01FF3E')
          .setTitle(`stats utilisateur :`)
          .addField("nom de l'utilisateur", msgnom)
-         .addField("point",`${userpoint[1]} point`, true)
+         .addField("money",`${usermoney[1]} money`, true)
          .addField("user ID", msgmention, true)
          .addField("inventaire", Inventory[1])
          .setThumbnail(message.mentions.members.first().user.avatarURL)
@@ -325,16 +365,16 @@ bot.on ('message' , message => {
            message.author.send(helpmp_embed);
     }
 
-    if (message.content === prefix + "point"){
-       var point = db.get("point").filter({user: msgauthor}).find('point').value()
-       var pointfinal = Object.values(point);
-       var point_embed = new discord.RichEmbed()
+    if (message.content === prefix + "money"){
+       var money = db.get("money").filter({user: msgauthor}).find('money').value()
+       var moneyfinal = Object.values(money);
+       var money_embed = new discord.RichEmbed()
          .setColor('#01FF3E')
-         .setTitle(`point de ${message.member.user.username}`)
-         .setDescription("voici tes points")
-         .addField("point:", `${pointfinal[1]} point` )
+         .setTitle(`money de ${message.member.user.username}`)
+         .setDescription("voici ta money")
+         .addField("money:", `${moneyfinal[1]} money` )
          .setFooter("merci d'utiliser le vaffan bot", bot.user.avatarURL)
-    message.channel.send({embed: point_embed});
+    message.channel.send({embed: money_embed});
     }
 
     if (message.content === prefix + "insult"){
@@ -347,9 +387,12 @@ bot.on ('message' , message => {
         console.log('site')
     }
 
-    const command = args.shift().toLowerCase();
 
     if ( command === "slap" ){
+        if (message.mentions.users.size === 0) {
+            return message.reply("mentionne quelqu'un stp")
+            console.log("fail slap") 
+        }
         console.log("Commande slap")
         random2(1, 10)
         let slap = message.mentions.members.first().user.username
@@ -452,14 +495,19 @@ bot.on ('message' , message => {
             message.channel.send(slap10_embed)
     
         }
-
-
+     
     }
 
-    if ( command === "hug" ){
+
+     if ( command === "hug" ){  
+        if (message.mentions.users.size === 0) {
+            return message.reply("mentionne quelqu'un stp")
+            console.log("fail hug") 
+        }
+        
         console.log("Commande hug")
         random2(1, 10);
-        let hug = message.mentions.members.first().user.username
+
 
         if (randnum2 == 1){
             var hug_embed = new discord.RichEmbed()
@@ -558,7 +606,7 @@ bot.on ('message' , message => {
             message.channel.send(hug6_embed)
     
         }
-        
+
     }
 
 })
@@ -574,3 +622,92 @@ function random2(min, max){
     max2 = Math.floor(max)
     randnum2 = Math.floor(Math.random() * (max2 - min2 +1) + min2)
 }
+
+let XP = JSON.parse(fs.readFileSync('./XP.json', 'utf8'));
+
+bot.on("message", message => {
+if(message.content.startsWith("prefix")) return;
+if(message.author.bot) return;
+if(!XP[message.author.id]) XP[message.author.id] = {XP: 0, level: 0};
+let userData = XP[message.author.id];
+userData.XP++;
+let curLevel = Math.floor(0.1 * Math.sqrt(userData.XP));
+if(curLevel > userData.level) {
+userData.level = curLevel;
+message.reply(`Vous êtes désormais au niveau **${curLevel}**!`);
+}
+if(message.content.startsWith("/level")) {
+
+var level_embed = new discord.RichEmbed()
+.setColor('#E20000')
+.setAuthor("Voici vos statistiques", (message.author.avatarURL))
+.addField("Niveaux:", `${userData.level}`, true)
+.addField("XP:", `${userData.XP}`, true)
+.setTimestamp()
+
+message.channel.send({embed: level_embed});
+}
+fs.writeFile('./XP.json', JSON.stringify(XP), (err) => {if(err) console.error(err)});
+});
+
+
+
+bot.on('message', message => {
+    if (message.content.startsWith("/piece")) {
+ var commande = [":moneybag: | La pièce dit : Face.", ":moneybag: | La pièce dit : Pile."]
+      message.channel.send(`${(commande[Math.floor(Math.random() * commande.length)])}`)
+ }
+ 
+ });
+
+
+ bot.on('message', message => {
+    if (message.content.startsWith("/roll")) {
+ var commande = [":control_knobs: | Vous etes tombé sur le numero: 1",":control_knobs: | Vous etes tombé sur le numero: 2",":control_knobs: | Vous etes tombé sur le numero: 3",":control_knobs: | Vous etes tombé sur le numero: 4",":control_knobs: | Vous etes tombé sur le numero: 5",":control_knobs: | Vous etes tombé sur le numero: 6",":control_knobs: | Vous etes tombé sur le numero: 7",":control_knobs: | Vous etes tombé sur le numero: 8",":control_knobs: | Vous etes tombé sur le numero: 9",":control_knobs: | Vous etes tombé sur le numero: 10"]
+      message.channel.send(`${(commande[Math.floor(Math.random() * commande.length)])}`)
+ }
+ });
+
+
+ bot.on('message', message => {
+    if (message.content.startsWith("/bvn")) {
+       message.delete(1000);
+       message.channel.send(":tada: | **" + message.author.username + "** vous souhaite la bienvenue !");
+    }
+ });
+ 
+ 
+ 
+ bot.on('message', message => {
+    if (message.content.startsWith("/salut")) {
+       message.delete(1000);
+       message.channel.send(":wave: | **" + message.author.username + "** vous fait un coucou !");
+    }
+ });
+
+ bot.on("message", message => {
+
+	
+	if (!message.content.startsWith(prefix)) return;
+	let command = message.content.split(" ")[0].slice(prefix.length)
+    let params = message.content.split(" ").slice(1) 
+    var args = message.content.substring(prefix.length).split(" ");
+
+
+let clear = require(`./command/clear.js`) 
+let mute = require(`./Command/mute.js`)
+
+if (command === "clear"){
+    clear.exec(bot,message,params)
+}
+
+if (command === "mute") {
+	mute.exec(bot,message,params)
+}
+
+ })
+
+
+
+
+
